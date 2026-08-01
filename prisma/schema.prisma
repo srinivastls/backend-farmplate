@@ -1,0 +1,363 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  FARMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  HARVESTING
+  PACKED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum PaymentMethod {
+  COD
+  UPI
+  CARD
+  NET_BANKING
+}
+
+enum TraceEventType {
+  SOWING
+  FERTILIZER
+  IRRIGATION
+  HARVESTED
+  QUALITY_CHECK
+  HUB_RECEIVED
+  OUT_FOR_DELIVERY
+  DELIVERED
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  password      String?
+  role          UserRole       @default(CUSTOMER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  farmer        Farmer?
+  addresses     Address[]
+  cart          Cart?
+  orders        Order[]
+  favorites     Favorite[]
+  impact        Impact?
+  notifications Notification[]
+  subscriptions Subscription[]
+}
+
+model Farmer {
+  id String @id @default(cuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  farmName String
+  about    String?
+
+  rating Float @default(5)
+
+  verified Boolean @default(false)
+
+  farms Farm[]
+
+  createdAt DateTime @default(now())
+}
+
+model Farm {
+  id String @id @default(cuid())
+
+  farmerId String
+  farmer   Farmer @relation(fields: [farmerId], references: [id])
+
+  name String
+
+  description String?
+
+  latitude  Float
+  longitude Float
+
+  address String
+
+  image String?
+
+  products Product[]
+
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+}
+
+model Banner {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String?
+  imageUrl  String
+  actionUrl String?
+  isActive  Boolean  @default(true)
+  priority  Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id String @id @default(cuid())
+
+  name String
+
+  icon String?
+
+  products Product[]
+}
+
+model Product {
+  id String @id @default(cuid())
+
+  farmId String
+  farm   Farm   @relation(fields: [farmId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  name String
+
+  description String?
+
+  image String?
+
+  organic Boolean @default(false)
+
+  price Float
+
+  quantity Float
+
+  unit String
+
+  harvestTime DateTime
+
+  lotId String @unique
+
+  traceEvents TraceEvent[]
+
+  orderItems OrderItem[]
+
+  favorites Favorite[]
+
+  createdAt DateTime   @default(now())
+  cartItems CartItem[]
+}
+
+model Address {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  label       String
+  fullAddress String
+
+  city    String
+  state   String
+  pincode String
+
+  latitude  Float
+  longitude Float
+
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model Cart {
+  id String @id @default(cuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+  id String @id @default(cuid())
+
+  cartId String
+  cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  productName String
+
+  unit String
+
+  price Float
+
+  quantity Float
+
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  status OrderStatus
+
+  paymentStatus PaymentStatus
+
+  paymentMethod PaymentMethod
+
+  subtotal Float
+
+  deliveryFee Float
+
+  platformFee Float
+
+  total Float
+
+  deliveryTime DateTime?
+
+  items OrderItem[]
+
+  createdAt DateTime @default(now())
+}
+
+model OrderItem {
+  id String @id @default(cuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  productName String
+
+  unit String
+
+  price Float
+
+  quantity Float
+}
+
+model TraceEvent {
+  id String @id @default(cuid())
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  eventType TraceEventType
+
+  title String
+
+  description String?
+
+  latitude Float?
+
+  longitude Float?
+
+  temperature Float?
+
+  humidity Float?
+
+  handledBy String?
+
+  image String?
+
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Favorite {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Impact {
+  id String @id @default(cuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  co2Saved Float @default(0)
+
+  foodMilesSaved Float @default(0)
+
+  waterSaved Float @default(0)
+
+  farmersSupported Int @default(0)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title String
+
+  message String
+
+  isRead Boolean @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  farmId String
+  farm   Farm   @relation(fields: [farmId], references: [id], onDelete: Cascade)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, farmId])
+}

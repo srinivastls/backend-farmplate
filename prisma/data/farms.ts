@@ -1,0 +1,58 @@
+export const farms = [
+  {
+    name: "Green Valley Farm",
+    address: "Roorkee, Uttarakhand",
+    latitude: 29.8543,
+    longitude: 77.8880,
+    description: "Organic vegetables directly from the farm.",
+  },
+  {
+    name: "Fresh Harvest Farm",
+    address: "Haridwar, Uttarakhand",
+    latitude: 29.9457,
+    longitude: 78.1642,
+    description: "Fresh seasonal fruits.",
+  },
+  {
+    name: "Nature Roots Farm",
+    address: "Dehradun",
+    latitude: 30.3165,
+    longitude: 78.0322,
+    description: "Chemical-free farming.",
+  },
+  {
+    name: "Sunrise Dairy",
+    address: "Roorkee",
+    latitude: 29.8545,
+    longitude: 77.8900,
+    description: "Fresh milk and dairy products.",
+  },
+  {
+    name: "Golden Fields",
+    address: "Saharanpur",
+    latitude: 29.9670,
+    longitude: 77.5510,
+    description: "Quality grains and cereals.",
+  },
+  {
+    name: "Himalayan Organics",
+    address: "Rishikesh",
+    latitude: 30.0869,
+    longitude: 78.2676,
+    description: "Organic vegetables from the foothills.",
+  },
+  {
+    name: "Krishna Farms",
+    address: "Meerut",
+    latitude: 28.9845,
+    longitude: 77.7064,
+    description: "Fresh vegetables every day.",
+  },
+  {
+    name: "RiverSide Farm",
+    address: "Muzaffarnagar",
+    latitude: 29.4727,
+    longitude: 77.7085,
+    description: "Fruit orchards near the river.",
+  },
+];

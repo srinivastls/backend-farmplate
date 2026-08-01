@@ -1,0 +1,58 @@
+export const farmers = [
+  {
+    name: "Ramesh Kumar",
+    email: "ramesh@farmplate.com",
+    farmName: "Green Valley Farm",
+    about: "Organic vegetable farmer with 15 years of experience.",
+    rating: 4.9,
+  },
+  {
+    name: "Suresh Reddy",
+    email: "suresh@farmplate.com",
+    farmName: "Fresh Harvest Farm",
+    about: "Seasonal fruit cultivation expert.",
+    rating: 4.8,
+  },
+  {
+    name: "Lakshmi Devi",
+    email: "lakshmi@farmplate.com",
+    farmName: "Nature Roots Farm",
+    about: "Chemical-free farming specialist.",
+    rating: 4.9,
+  },
+  {
+    name: "Mohan Singh",
+    email: "mohan@farmplate.com",
+    farmName: "Sunrise Dairy",
+    about: "Dairy farmer producing fresh milk daily.",
+    rating: 4.7,
+  },
+  {
+    name: "Arjun Patel",
+    email: "arjun@farmplate.com",
+    farmName: "Golden Fields",
+    about: "Traditional grain producer.",
+    rating: 4.8,
+  },
+  {
+    name: "Ravi Verma",
+    email: "ravi@farmplate.com",
+    farmName: "Himalayan Organics",
+    about: "Mountain-grown organic produce.",
+    rating: 5.0,
+  },
+  {
+    name: "Priya Sharma",
+    email: "priya@farmplate.com",
+    farmName: "Krishna Farms",
+    about: "Fresh vegetables harvested every morning.",
+    rating: 4.8,
+  },
+  {
+    name: "Anand Rao",
+    email: "anand@farmplate.com",
+    farmName: "RiverSide Farm",
+    about: "Fresh fruits grown near river banks.",
+    rating: 4.9,
+  },
+];
