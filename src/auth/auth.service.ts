@@ -46,6 +46,13 @@ export class AuthService {
     return {
       message: 'Registration successful',
       accessToken: this.jwtService.sign(payload),
+      // need the name
+      user: {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  },
     };
   }
 
@@ -72,7 +79,12 @@ export class AuthService {
 
   return {
     accessToken: this.jwtService.sign(payload),
-    user,
+    user: {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  },
   };
 }
 
@@ -100,6 +112,12 @@ export class AuthService {
 
     return {
       accessToken: this.jwtService.sign(payload),
+      user: {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  },
     };
   }
 }

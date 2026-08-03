@@ -33,21 +33,82 @@ export class ProductsService {
 
   }
 
-  async findAll() {
 
-    return this.prisma.product.findMany({
+async findAll(filters: {
+  page: number;
+  limit: number;
+  search?: string;
+  category?: string;
+  organic?: string;
+}) {
 
-      include: {
+  const where: any = {};
 
-        farm: true,
+  //----------------------------------
+  // Search
+  //----------------------------------
 
-        category: true,
+  if (filters.search?.trim()) {
+    where.OR = [
+      {
+        name: {
+          contains: filters.search,
+          mode: 'insensitive',
+        },
+      },
+      {
+        description: {
+          contains: filters.search,
+          mode: 'insensitive',
+        },
+      },
+    ];
+  }
 
+  //----------------------------------
+  // Category
+  //----------------------------------
+
+  if (filters.category?.trim()) {
+    where.category = {
+      name: {
+        equals: filters.category,
+        mode: 'insensitive',
+      },
+    };
+  }
+
+  //----------------------------------
+  // Organic
+  //----------------------------------
+
+  if (filters.organic != null) {
+    where.organic =
+        filters.organic == "true";
+  }
+
+  return this.prisma.product.findMany({
+    where,
+
+    include: {
+      farm: {
+        include: {
+          farmer: {
+            include: {
+              user: true,
+            },
+          },
+        },
       },
 
-    });
+      category: true,
+    },
 
-  }
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
 
   async findOne(id: string) {
 

@@ -18,12 +18,14 @@ import { HomeModule } from './home/home.module';
 import { ConfigModule } from '@nestjs/config';
 import { CheckoutModule } from './checkout/checkout.module';
 import { AddressModule } from './address/address.module';
+import { AdminModule } from './admin/admin.module';
+import { InvoiceModule } from './invoice/invoice.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
       isGlobal: true,
     }),
-    AuthModule, UsersModule, FarmersModule, FarmsModule, ProductsModule, CartModule, OrdersModule, TraceModule, ImpactModule, NotificationsModule, PaymentsModule, PrismaModule, HomeModule, CheckoutModule, AddressModule],
+    AuthModule, UsersModule, FarmersModule, FarmsModule, ProductsModule, CartModule, OrdersModule, TraceModule, ImpactModule, NotificationsModule, PaymentsModule, PrismaModule, HomeModule, CheckoutModule, AddressModule, AdminModule, InvoiceModule],
   controllers: [AppController],
   providers: [AppService],
 })

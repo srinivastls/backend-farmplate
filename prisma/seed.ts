@@ -34,6 +34,34 @@ async function main() {
 
   console.log("✅ Database cleared");
 
+  await prisma.crop.createMany({
+
+  data: [
+
+    {
+      name: "Rice",
+    },
+
+    {
+      name: "Wheat",
+    },
+
+    {
+      name: "Millets",
+    },
+
+    {
+      name: "Maize",
+    },
+
+    {
+      name: "Pulses",
+    },
+
+  ],
+
+});
+
   // -----------------------------
   // Categories
   // -----------------------------

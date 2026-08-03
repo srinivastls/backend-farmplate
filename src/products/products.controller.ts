@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 
 import { ProductsService } from './products.service';
@@ -13,7 +14,10 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
-@Controller('products')
+@Controller({
+  path: 'products',
+  version: '1',
+})
 export class ProductsController {
 
   constructor(
@@ -25,10 +29,7 @@ export class ProductsController {
     return this.productsService.create(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.productsService.findAll();
-  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -47,4 +48,21 @@ export class ProductsController {
   remove(@Param('id') id: string) {
     return this.productsService.remove(id);
   }
+
+@Get()
+findAll(
+  @Query('page') page = '1',
+  @Query('limit') limit = '20',
+  @Query('search') search?: string,
+  @Query('category') category?: string,
+  @Query('organic') organic?: string,
+) {
+  return this.productsService.findAll({
+    page: Number(page),
+    limit: Number(limit),
+    search,
+    category,
+    organic,
+  });
+}
 }

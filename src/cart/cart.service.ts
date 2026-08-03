@@ -97,16 +97,32 @@ return {
 };
 }
 
+
+
   // -------------------------------
   // Add Item
   // -------------------------------
+  
 
   async addItem(
     userId: string,
     dto: AddCartItemDto,
   ) {
     // Find product
+    console.log("========== CART DEBUG ==========");
+    console.log("Received userId:", userId);
 
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    console.log("User found:", user);
+
+    let cart = await this.prisma.cart.findUnique({
+      where: { userId },
+    });
+
+    console.log("Existing cart:", cart);
     const product =
       await this.prisma.product.findUnique({
         where: {
@@ -122,21 +138,15 @@ return {
 
     // Find or Create Cart
 
-    let cart =
-      await this.prisma.cart.findUnique({
-        where: {
-          userId,
-        },
-      });
+    // Find or Create Cart
 
-    if (!cart) {
-      cart =
-        await this.prisma.cart.create({
-          data: {
-            userId,
-          },
-        });
-    }
+if (!cart) {
+  cart = await this.prisma.cart.create({
+    data: {
+      userId,
+    },
+  });
+}
 
     // Check existing item
 
