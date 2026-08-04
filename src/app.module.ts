@@ -12,6 +12,7 @@ import { TraceModule } from './trace/trace.module';
 import { ImpactModule } from './impact/impact.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PaymentsModule } from './payments/payments.module';
+import {FavoritesModule} from './favorites/favorites.module';
 
 import { PrismaModule } from './prisma/prisma.module';
 import { HomeModule } from './home/home.module';
@@ -25,7 +26,7 @@ import { InvoiceModule } from './invoice/invoice.module';
   imports: [ConfigModule.forRoot({
       isGlobal: true,
     }),
-    AuthModule, UsersModule, FarmersModule, FarmsModule, ProductsModule, CartModule, OrdersModule, TraceModule, ImpactModule, NotificationsModule, PaymentsModule, PrismaModule, HomeModule, CheckoutModule, AddressModule, AdminModule, InvoiceModule],
+    AuthModule, UsersModule, FarmersModule, FarmsModule, ProductsModule, CartModule, OrdersModule, TraceModule, ImpactModule, NotificationsModule, PaymentsModule, PrismaModule, HomeModule, CheckoutModule, AddressModule, AdminModule, InvoiceModule, FavoritesModule],
   controllers: [AppController],
   providers: [AppService],
 })
