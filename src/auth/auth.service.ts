@@ -64,12 +64,18 @@ export class AuthService {
     await this.usersService.findByEmail(decoded.email!);
 
   if (!user) {
-    user = await this.usersService.createUser({
-      name: decoded.name ?? 'Google User',
-      email: decoded.email!,
-      password: null!,
-    });
-  }
+  user = await this.usersService.createUser({
+    name: decoded.name ?? 'Google User',
+    email: decoded.email!,
+    password: null,
+    firebaseUid: decoded.uid,
+  });
+} else if (!user.firebaseUid) {
+  user = await this.usersService.updateFirebaseUid(
+    user.id,
+    decoded.uid,
+  );
+}
 
   const payload = {
     sub: user.id,
@@ -120,4 +126,26 @@ export class AuthService {
   },
     };
   }
+
+  async deleteAccount(userId: string) {
+  const user = await this.usersService.findById(userId);
+
+  if (!user) {
+    throw new UnauthorizedException('User not found');
+  }
+
+  if (user.role !== 'CUSTOMER') {
+    throw new UnauthorizedException(
+      'Only customer accounts can be deleted here',
+    );
+  }
+
+  // Delete Firebase account if this customer has one.
+  if (user.firebaseUid) {
+    await this.firebaseService.deleteUser(user.firebaseUid);
+  }
+
+  // Delete/anonymize Farm2Plate database data.
+  return this.usersService.deleteUserAccount(userId);
+}
 }

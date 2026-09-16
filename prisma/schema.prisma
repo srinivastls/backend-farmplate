@@ -8,19 +8,20 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id String @id @default(cuid())
 
-  name          String
-  email         String         @unique
-  password      String?
-  role          UserRole       @default(CUSTOMER)
+  name        String
+  email       String   @unique
+  password    String?
+  firebaseUid String?  @unique
+  role        UserRole @default(CUSTOMER)
 
   // Profile
-  phone         String?
-  image         String?
+  phone String?
+  image String?
 
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   addresses     Address[]
   cart          Cart?
@@ -133,21 +134,21 @@ model Product {
 }
 
 model Address {
-  id          String   @id @default(cuid())
-  userId      String
-  label       String
-  name        String
-  phone       String
+  id           String   @id @default(cuid())
+  userId       String
+  label        String
+  name         String
+  phone        String
   addressLine1 String
   addressLine2 String?
-  city        String
-  state       String
-  pincode     String
-  latitude    Float
-  longitude   Float
-  isDefault   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  city         String
+  state        String
+  pincode      String
+  latitude     Float
+  longitude    Float
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Cart {
@@ -204,34 +205,31 @@ enum PaymentStatus {
 }
 
 model Order {
-  id            String        @id @default(cuid())
-  userId        String
+  id     String  @id @default(cuid())
+  userId String?
 
   status        OrderStatus
   paymentStatus PaymentStatus
 
-  subtotal      Float
-  deliveryFee   Float
-  platformFee   Float
-  total         Float
+  subtotal    Float
+  deliveryFee Float
+  platformFee Float
+  total       Float
 
   customerName String?
-  phone String?
+  phone        String?
   addressLine1 String?
   addressLine2 String?
-  city String?
-  state String?
-  pincode String?
+  city         String?
+  state        String?
+  pincode      String?
 
-  
-  
+  deliveryTime DateTime?
+  createdAt    DateTime  @default(now())
 
-  deliveryTime  DateTime?
-  createdAt     DateTime      @default(now())
-
-  user          User          @relation(fields: [userId], references: [id])
-  items         OrderItem[]
-  payment       Payment[]
+  user    User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items   OrderItem[]
+  payment Payment[]
 }
 
 model OrderItem {
@@ -307,18 +305,18 @@ model Impact {
 }
 
 model Notification {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  title     String
-  message   String
+  title   String
+  message String
 
-  type       NotificationType
-  isRead     Boolean @default(false)
+  type   NotificationType
+  isRead Boolean          @default(false)
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
 enum NotificationType {
@@ -390,8 +388,6 @@ enum UserRole {
   ADMIN
 }
 
-
-
 enum OrderStatus {
   PENDING
   CONFIRMED
@@ -400,7 +396,6 @@ enum OrderStatus {
   DELIVERED
   CANCELLED
 }
-
 
 enum TraceEventType {
   SOWING

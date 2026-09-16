@@ -25,13 +25,22 @@ export class UsersService {
   name: string;
   email: string;
   password?: string | null;
+  firebaseUid?: string | null;
 }) {
   return this.prisma.user.create({
     data: {
       name: data.name,
       email: data.email,
       password: data.password ?? null,
+      firebaseUid: data.firebaseUid ?? null,
     },
+  });
+}
+
+async updateFirebaseUid(userId: string, firebaseUid: string) {
+  return this.prisma.user.update({
+    where: { id: userId },
+    data: { firebaseUid },
   });
 }
 
@@ -138,6 +147,42 @@ return {
   success: true,
   message: "Password changed successfully",
 };
+}
+
+
+async deleteUserAccount(userId: string) {
+  const user = await this.prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new BadRequestException('User not found');
+  }
+
+  // Remove personal information from retained orders.
+  await this.prisma.order.updateMany({
+    where: { userId },
+    data: {
+      customerName: null,
+      phone: null,
+      addressLine1: null,
+      addressLine2: null,
+      city: null,
+      state: null,
+      pincode: null,
+    },
+  });
+
+  // Delete the user.
+  // Related customer data configured with Cascade will be removed.
+  await this.prisma.user.delete({
+    where: { id: userId },
+  });
+
+  return {
+    success: true,
+    message: 'Account deleted successfully',
+  };
 }
 
 

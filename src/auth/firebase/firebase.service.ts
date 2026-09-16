@@ -1,9 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
+import * as path from 'path';
 
+// const serviceAccount = require(
+//   path.join(process.cwd(), 'firebase-service-account.json'),
+// );
 @Injectable()
 export class FirebaseService {
   constructor() {
+    // if (!admin.apps.length) {
+    //   admin.initializeApp({
+    //     credential: admin.credential.cert(serviceAccount),
+    //   });
+    // }
     if (!admin.apps.length) {
       admin.initializeApp({
         credential: admin.credential.cert({
@@ -18,6 +27,20 @@ export class FirebaseService {
 
   verifyToken(idToken: string) {
     return admin.auth().verifyIdToken(idToken);
+  }
+
+  async deleteUser(uid: string) {
+    try {
+      await admin.auth().deleteUser(uid);
+      return true;
+    } catch (error: any) {
+      // Firebase user may already be deleted.
+      if (error?.code === 'auth/user-not-found') {
+        return true;
+      }
+
+      throw error;
+    }
   }
 
 }
